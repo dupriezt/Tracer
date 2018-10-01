@@ -37,8 +37,3 @@ TracerTest >> testCleanTraceMarkGetTrace [
 	InspectorNavigator inspect: Tracer getTrace.
 	
 ]
-
-{ #category : #tests }
-TracerTest >> testExecuteBlockWithoutTriggeringHalts [
-	self shouldnt: [ Tracer new executeBlockWithoutTriggeringHalts: [ self methodWithHalt ] ] raise: Halt  
-]

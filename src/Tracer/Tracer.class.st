@@ -34,8 +34,3 @@ Tracer class >> recordingOn [
 Tracer class >> recordingOn: aBoolean [
 	recordingOn := aBoolean
 ]
-
-{ #category : #'as yet unclassified' }
-Tracer >> executeBlockWithoutTriggeringHalts: aBlock [
-	aBlock value.
-]
