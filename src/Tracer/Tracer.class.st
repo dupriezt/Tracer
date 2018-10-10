@@ -13,6 +13,11 @@ Tracer class >> cleanTrace [
 	trace := LinkedList new.
 ]
 
+{ #category : #'public access' }
+Tracer class >> eval: sourceCode [
+	self evaluate: sourceCode
+]
+
 { #category : #private }
 Tracer class >> getTrace [
 	^ trace
