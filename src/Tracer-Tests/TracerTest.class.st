@@ -37,3 +37,10 @@ TracerTest >> testCleanTraceMarkGetTrace [
 	InspectorNavigator inspect: Tracer getTrace.
 	
 ]
+
+{ #category : #'as yet unclassified' }
+TracerTest >> testInstrumentMethod [
+	| tta |
+	tta := TracerTestAssistant new.
+	Tracer new instrumentMethodNamed: #testMethod1 ofObject: tta.
+]

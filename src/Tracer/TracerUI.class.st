@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'recordList',
 		'sourceCodeBox',
-		'executeButton'
+		'executeButton',
+		'tracer'
 	],
 	#category : #Tracer
 }
@@ -17,6 +18,12 @@ TracerUI class >> defaultSpec [
 		origin: 0 @ 0 corner: 1 @ 0.7;
 		newRow: [ :row | row add: #recordList ]
 		origin: 0 @ 0.7 corner: 1 @ 7.
+]
+
+{ #category : #'instance creation' }
+TracerUI class >> open [
+	<script>
+	self new openWithSpec
 ]
 
 { #category : #accessing }
@@ -37,7 +44,11 @@ TracerUI >> extent [
 { #category : #initialization }
 TracerUI >> initializeWidgets [
 	
+	tracer := Tracer new. "Not a widget"
+	tracer linkToUI: self.
+	
 	recordList := ListPresenter new.
+	recordList items: tracer tracei.
 	sourceCodeBox := TextPresenter new.
 	executeButton := self newButton.
 	
@@ -47,7 +58,11 @@ TracerUI >> initializeWidgets [
 	sourceCodeBox acceptBlock: [ :txt | ].
 	executeButton
 		icon: (self iconNamed: #glamorousGo);
-		action: [ Tracer eval: (self sourceCodeBox getText)].
+		action: [ 
+			self class compiler
+				addPlugin: (OCCompilerDynamicASTPlugin newFromTransformBlock: [ :ast | tracer instrumentMethodAst: ast ] andPriority: 0);
+				evaluate: (self sourceCodeBox getText)
+			"(tracer eval: (self sourceCodeBox getText)) inspect"].
 ]
 
 { #category : #accessing }
