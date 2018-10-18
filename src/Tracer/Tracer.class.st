@@ -2,13 +2,9 @@ Class {
 	#name : #Tracer,
 	#superclass : #Object,
 	#instVars : [
-		'tracei',
 		'metalinks',
-		'tracerui'
-	],
-	#classVars : [
-		'recordingOn',
-		'trace'
+		'tracerui',
+		'recordTrace'
 	],
 	#category : #Tracer
 }
@@ -40,6 +36,11 @@ Tracer class >> recordingOn: aBoolean [
 	recordingOn := aBoolean
 ]
 
+{ #category : #'as yet unclassified' }
+Tracer >> clearRecordTrace [
+	self recordTrace: nil
+]
+
 { #category : #'public access' }
 Tracer >> eval: sourceCode [
 	^ self class evaluate: sourceCode
@@ -56,7 +57,7 @@ Tracer >> instrumentMethodAst: anAst [
 	metalink := MetaLink new
 		metaObject: self;
 		selector: #makeRecord:;
-		arguments: #(receiver).
+		arguments: #(context).
 	metalink options add: #argsAsArray.
 	"metalink optionArgsAsArray: true."
 	anAst link: metalink.
@@ -80,7 +81,10 @@ Tracer >> linkToUI: aTracerUI [
 
 { #category : #'as yet unclassified' }
 Tracer >> makeRecord: reifications [
-	reifications inspect.
+	| context |
+	context := reifications at: 1.
+	self recordTrace add: (TracerRecord newFromContext: context). 
+	self tracerui ifNotNil: [ self tracerui updateRecordList  ].
 ]
 
 { #category : #accessing }
@@ -89,20 +93,20 @@ Tracer >> metalinks [
 	^ metalinks
 ]
 
+{ #category : #accessing }
+Tracer >> recordTrace [
+	recordTrace ifNil: [ recordTrace := LinkedList new].
+	^ recordTrace
+]
+
+{ #category : #accessing }
+Tracer >> recordTrace: anObject [
+	recordTrace := anObject
+]
+
 { #category : #removing }
 Tracer >> removeMetalinks [
 	self metalinks do: [ :metalink | metalink uninstall ]
-]
-
-{ #category : #accessing }
-Tracer >> tracei [
-	tracei ifNil: [ tracei := LinkedList new ].
-	^ tracei
-]
-
-{ #category : #accessing }
-Tracer >> tracei: anObject [
-	tracei := anObject
 ]
 
 { #category : #accessing }

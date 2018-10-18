@@ -48,7 +48,7 @@ TracerUI >> initializeWidgets [
 	tracer linkToUI: self.
 	
 	recordList := ListPresenter new.
-	recordList items: tracer tracei.
+	recordList items: tracer recordTrace.
 	sourceCodeBox := TextPresenter new.
 	executeButton := self newButton.
 	
@@ -59,7 +59,8 @@ TracerUI >> initializeWidgets [
 	executeButton
 		icon: (self iconNamed: #glamorousGo);
 		action: [
-			|class compiledMethodSelector| 
+			|class compiledMethodSelector|
+			self tracer clearRecordTrace.
 			class := Object newAnonymousSubclass.
 			compiledMethodSelector := class compile: 'tracerDoIt ', (Character lf asString), (Character tab asString), (self sourceCodeBox getText asString).
 			tracer instrumentMethod: (class methodDict at: compiledMethodSelector).
@@ -94,4 +95,19 @@ TracerUI >> sourceCodeBox: anObject [
 { #category : #initialization }
 TracerUI >> title [
 	^ 'Tracer'.
+]
+
+{ #category : #accessing }
+TracerUI >> tracer [
+	^ tracer
+]
+
+{ #category : #accessing }
+TracerUI >> tracer: anObject [
+	tracer := anObject
+]
+
+{ #category : #'as yet unclassified' }
+TracerUI >> updateRecordList [
+	self recordList items: (self tracer recordTrace)
 ]
