@@ -65,6 +65,7 @@ TracerUI >> initializeWidgets [
 			compiledMethodSelector := class compile: 'tracerDoIt ', (Character lf asString), (Character tab asString), (self sourceCodeBox getText asString).
 			tracer instrumentMethod: (class methodDict at: compiledMethodSelector).
 			class new perform: compiledMethodSelector.
+			self halt.
 			tracer uninstrumentInstrumentedMethods.
 			"self class compiler
 				addPlugin: (OCCompilerDynamicASTPlugin newFromTransformBlock: [ :ast | tracer instrumentMethodAst: ast ] andPriority: 0);

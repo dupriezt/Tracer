@@ -109,16 +109,6 @@ Tracer >> instrumentMethodAst: anAst [
 ]
 
 { #category : #'as yet unclassified' }
-Tracer >> instrumentMethodNamed: aSymbol ofObject: anObject [
-	| class |
-	class := anObject class.
-	class methodDict at: aSymbol ifPresent: [ :compiledMethod |
-		self instrumentMethod: compiledMethod
-	] ifAbsent: [ self error: 'Method not found' ].
-	self halt.
-]
-
-{ #category : #'as yet unclassified' }
 Tracer >> instrumentMethodNode: aRBMethodNode [
 	|metalink|
 	metalink := MetaLink new
@@ -127,6 +117,7 @@ Tracer >> instrumentMethodNode: aRBMethodNode [
 		arguments: #(context).
 	metalink options add: #argsAsArray.
 	"metalink optionArgsAsArray: true."
+	self halt.
 	aRBMethodNode link: metalink.
 	self metalinks add: metalink.
 ]

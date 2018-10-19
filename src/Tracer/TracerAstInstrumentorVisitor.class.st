@@ -35,5 +35,4 @@ TracerAstInstrumentorVisitor >> visitMessageNode: aMessageNode [
 TracerAstInstrumentorVisitor >> visitMethodNode: aMethodNode [
 	self tracer instrumentMethodNode: aMethodNode.
 	super visitMethodNode: aMethodNode.
-
 ]
