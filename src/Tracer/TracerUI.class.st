@@ -65,7 +65,7 @@ TracerUI >> initializeWidgets [
 			compiledMethodSelector := class compile: 'tracerDoIt ', (Character lf asString), (Character tab asString), (self sourceCodeBox getText asString).
 			tracer instrumentMethod: (class methodDict at: compiledMethodSelector).
 			class new perform: compiledMethodSelector.
-			
+			tracer uninstrumentInstrumentedMethods.
 			"self class compiler
 				addPlugin: (OCCompilerDynamicASTPlugin newFromTransformBlock: [ :ast | tracer instrumentMethodAst: ast ] andPriority: 0);
 				evaluate: (self sourceCodeBox getText)"
@@ -109,5 +109,5 @@ TracerUI >> tracer: anObject [
 
 { #category : #'as yet unclassified' }
 TracerUI >> updateRecordList [
-	self recordList items: (self tracer recordTrace)
+	self recordList items: (self tracer recordTrace collect: [:tracerRecord | tracerRecord method name])
 ]
