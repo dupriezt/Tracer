@@ -173,6 +173,18 @@ Tracer >> recordTrace: anObject [
 	recordTrace := anObject
 ]
 
+{ #category : #'as yet unclassified' }
+Tracer >> traceExecutionOf: aString [
+	|class compiledMethodSelector|
+	self clearRecordTrace.
+	class := Object newAnonymousSubclass.
+	compiledMethodSelector := class compile: 'tracerDoIt ', (Character lf asString), (Character tab asString), aString.
+	self instrumentMethod: (class methodDict at: compiledMethodSelector).
+	class new perform: compiledMethodSelector.
+	self halt.
+	self uninstrumentInstrumentedMethods.
+]
+
 { #category : #accessing }
 Tracer >> tracerui [
 	^ tracerui

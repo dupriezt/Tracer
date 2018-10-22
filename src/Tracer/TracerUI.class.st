@@ -59,18 +59,8 @@ TracerUI >> initializeWidgets [
 	executeButton
 		icon: (self iconNamed: #glamorousGo);
 		action: [
-			|class compiledMethodSelector|
-			self tracer clearRecordTrace.
-			class := Object newAnonymousSubclass.
-			compiledMethodSelector := class compile: 'tracerDoIt ', (Character lf asString), (Character tab asString), (self sourceCodeBox getText asString).
-			tracer instrumentMethod: (class methodDict at: compiledMethodSelector).
-			class new perform: compiledMethodSelector.
-			self halt.
-			tracer uninstrumentInstrumentedMethods.
-			"self class compiler
-				addPlugin: (OCCompilerDynamicASTPlugin newFromTransformBlock: [ :ast | tracer instrumentMethodAst: ast ] andPriority: 0);
-				evaluate: (self sourceCodeBox getText)"
-			"(tracer eval: (self sourceCodeBox getText)) inspect"].
+			self tracer traceExecutionOf: (self sourceCodeBox getText asString)
+		].
 ]
 
 { #category : #accessing }
