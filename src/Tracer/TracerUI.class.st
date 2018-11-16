@@ -26,6 +26,15 @@ TracerUI class >> open [
 	self new openWithSpec
 ]
 
+{ #category : #'instance creation' }
+TracerUI class >> openOn: initialSourceCode [
+	<script>
+	|inst|
+	inst := self new.
+	inst openWithSpec.
+	inst sourceCodeBox text: initialSourceCode.
+]
+
 { #category : #accessing }
 TracerUI >> executeButton [
 	^ executeButton
