@@ -2,7 +2,9 @@ Class {
 	#name : #TracerRecord,
 	#superclass : #Object,
 	#instVars : [
-		'method'
+		'method',
+		'receiver',
+		'sender'
 	],
 	#category : #Tracer
 }
@@ -12,6 +14,8 @@ TracerRecord class >> newFromContext: aContext [
 	| newToolRecord |
 	newToolRecord := self new.
 	newToolRecord method: aContext method.
+	newToolRecord receiver: aContext receiver.
+	newToolRecord sender: aContext sender.
 	^ newToolRecord 
 ]
 
@@ -23,4 +27,24 @@ TracerRecord >> method [
 { #category : #accessing }
 TracerRecord >> method: anObject [
 	method := anObject
+]
+
+{ #category : #accessing }
+TracerRecord >> receiver [
+	^ receiver
+]
+
+{ #category : #accessing }
+TracerRecord >> receiver: anObject [
+	receiver := anObject
+]
+
+{ #category : #accessing }
+TracerRecord >> sender [
+	^ sender
+]
+
+{ #category : #accessing }
+TracerRecord >> sender: anObject [
+	sender := anObject
 ]
