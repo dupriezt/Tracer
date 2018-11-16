@@ -20,7 +20,8 @@ Class {
 		'metalinks',
 		'tracerui',
 		'recordTrace',
-		'instrumentedMethods'
+		'instrumentedMethods',
+		'myProcess'
 	],
 	#category : #Tracer
 }
@@ -41,6 +42,7 @@ Tracer >> instrumentMessageNode: aRBMessageNode [
 	metalink := MetaLink new
 		metaObject: self;
 		selector: #instrumentMethodAboutToBeCalled:;
+		condition: [ myProcess == Processor activeProcess ];
 		arguments: #(receiver selector);
 		control: #before.
 	metalink options add: #argsAsArray.
@@ -53,6 +55,7 @@ Tracer >> instrumentMessageNode: aRBMessageNode [
 Tracer >> instrumentMethod: aCompiledMethod [
 	"Does not instrument a method that this instance of Tracer already instrumented"
 	(self isMethodInstrumented: aCompiledMethod) ifTrue: [^false].
+	"(aCompiledMethod methodClass package name = 'Reflectivity' ) ifTrue: [^false]."
 	aCompiledMethod ast acceptVisitor: (TracerAstInstrumentorVisitor newFromTracer: self).
 	self instrumentedMethods add: aCompiledMethod.	
 ]
@@ -87,6 +90,8 @@ Tracer >> instrumentMethodNode: aRBMethodNode [
 	metalink := MetaLink new
 		metaObject: self;
 		selector: #makeRecord:;
+		condition: [myProcess == Processor activeProcess];
+		level: 0;
 		arguments: #(context).
 	metalink options add: #argsAsArray.
 	"metalink optionArgsAsArray: true."
@@ -116,12 +121,15 @@ Tracer >> linkToUI: aTracerUI [
 	self tracerui: aTracerUI
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 Tracer >> makeRecord: reifications [
 	| context |
 	context := reifications at: 1.
-	self recordTrace add: (TracerRecord newFromContext: context). 
-	self tracerui ifNotNil: [ self tracerui updateRecordList  ].
+	"Transcript show: (context sender sender sender method package name) asString."
+	"context sender sender sender method package name = 'Reflectivity'
+		ifTrue: [ ^ self ]."
+	self recordTrace add: (TracerRecord newFromContext: context).
+	self tracerui ifNotNil: [ self tracerui updateRecordList ]
 ]
 
 { #category : #accessing }
@@ -152,6 +160,7 @@ Tracer >> traceExecutionOf: aString [
 	self clearRecordTrace.
 	class := Object newAnonymousSubclass.
 	compiledMethodSelector := class compile: 'tracerDoIt ', (Character lf asString), (Character tab asString), aString.
+	myProcess := Processor activeProcess.
 	self instrumentMethod: (class methodDict at: compiledMethodSelector).
 	class new perform: compiledMethodSelector.
 	"self halt."

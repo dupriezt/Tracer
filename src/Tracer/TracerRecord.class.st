@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'method',
 		'receiver',
-		'sender'
+		'senderMethod'
 	],
 	#category : #Tracer
 }
@@ -15,7 +15,9 @@ TracerRecord class >> newFromContext: aContext [
 	newToolRecord := self new.
 	newToolRecord method: aContext method.
 	newToolRecord receiver: aContext receiver.
-	newToolRecord sender: aContext sender.
+	"Following keeps giving a context from the metalink machinery. Should keep calling sender until the sender is not from Reflectivity"
+	"newToolRecord senderMethod: aContext sender method."
+	newToolRecord senderMethod: aContext home sender method.
 	^ newToolRecord 
 ]
 
@@ -40,11 +42,11 @@ TracerRecord >> receiver: anObject [
 ]
 
 { #category : #accessing }
-TracerRecord >> sender [
-	^ sender
+TracerRecord >> senderMethod [
+	^ senderMethod
 ]
 
 { #category : #accessing }
-TracerRecord >> sender: anObject [
-	sender := anObject
+TracerRecord >> senderMethod: anObject [
+	senderMethod := anObject
 ]
